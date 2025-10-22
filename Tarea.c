@@ -5,10 +5,6 @@
 #include <stdbool.h>
 #include <limits.h>
 
-//int distancia[MAX_VERTICES];
-//int predecesor[MAX_VERTICES];
-//int visitado[MAX_VERTICES];
-
 typedef struct {
     char* vertices;
     char* edges;
@@ -101,10 +97,6 @@ void print_adyacent_matrix(int **matrix, int size){
         }
         printf("\n");
     }
-}
-
-char *find_path(){
-    return "abcd";
 }
 
 int get_min_dist_vertex(int* distancia, bool* visto, int size) {
@@ -329,8 +321,6 @@ int main(int argc, char *argv[]){  //int argc, char *argv[]
             size = strlen(my_graph.vertices);
         }
 
-
-
         // Corregido: Accede al carácter en la posición [0] de la cadena
         if (strlen(argv[2]) == 1 && strlen(argv[3]) == 1 && 
             vertex_in_graph(argv[2][0], &my_graph) && vertex_in_graph(argv[3][0], &my_graph)) {
@@ -376,7 +366,6 @@ int main(int argc, char *argv[]){  //int argc, char *argv[]
                 free(my_graph.vertices);
                 free(my_graph.edges);
             }
-            find_path();
             return 0;
         }
         printf("Error, vertices no validos.\n");
@@ -387,6 +376,7 @@ int main(int argc, char *argv[]){  //int argc, char *argv[]
             free(my_graph.vertices);
             free(my_graph.edges);
         return -1;
-    }
+        }
     return -1;
+    }
 }
