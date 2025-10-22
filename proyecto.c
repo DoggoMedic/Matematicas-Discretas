@@ -8,17 +8,28 @@
 //int predecesor[MAX_VERTICES];
 //int visitado[MAX_VERTICES];
 
-
 typedef struct {
     char* vertices;
     char* edges;
 } GraphData; 
 
-char index_to_vertix(int i){
+bool vertex_in_graph(char v, GraphData *graph) {
+    const char *vertices = graph->vertices; 
+    size_t len = strlen(vertices);
+
+    for(size_t i = 0; i < len; i++) {
+        if(v == vertices[i]) {
+            return true;
+        }
+    }
+    return false;
+}
+
+char index_to_vertex(int i){
     return i + 'a';
 }
 
-int vertix_to_index(char c){
+int vertex_to_index(char c){
     return c - 'a';
 }
 
@@ -57,16 +68,16 @@ int** adyacent_matrix(GraphData graph, bool oriented) {
 
     if(oriented){
         for(size_t k=0;k<strlen(graph.edges);k+=2){
-            int i = vertix_to_index(graph.edges[k]);
-            int j = vertix_to_index(graph.edges[k+1]);
+            int i = vertex_to_index(graph.edges[k]);
+            int j = vertex_to_index(graph.edges[k+1]);
             matrix[j][i] = 1;
         }
     }
 
     else{
         for(size_t k=0;k<strlen(graph.edges);k+=2){
-            int i = vertix_to_index(graph.edges[k]);
-            int j = vertix_to_index(graph.edges[k+1]);
+            int i = vertex_to_index(graph.edges[k]);
+            int j = vertex_to_index(graph.edges[k+1]);
             matrix[i][j] = 1;
             matrix[j][i] = 1;
         }
@@ -79,16 +90,20 @@ void print_adyacent_matrix(int **matrix, int size){
 
     for(int a=0;a<size;a++){
         if(a==0) printf("  ");
-        printf("%c ", index_to_vertix(a));
+        printf("%c ", index_to_vertex(a));
     }
     printf("\n");
     for(int j=0;j<size;j++){
-        printf("%c ", index_to_vertix(j));
+        printf("%c ", index_to_vertex(j));
         for(int i=0;i<size;i++){
             printf("%d ", matrix[i][j]);
         }
         printf("\n");
     }
+}
+
+char *find_path(){
+    return "abcd";
 }
 
 int** readFile(const char *nameFile, GraphData *out_graph) {
@@ -175,29 +190,43 @@ int** readFile(const char *nameFile, GraphData *out_graph) {
     return matrix; // Devuelve la matriz (memoria asignada con malloc).
 }
 
-int main(){  //int argc, char *argv[]
-const char *test_filename = "../Grafos no orientados/Planar.txt";
-    
-    GraphData my_graph;
-    
-    int **matrix = readFile(test_filename, &my_graph); 
-    
-    if (matrix != NULL) {
-        int size = strlen(my_graph.vertices);
-        printf("\n--- Matriz de Adyacencia (Objeto Persistente) ---\n");
-        print_adyacent_matrix(matrix, size);
-        
-        // 1. Liberar la matriz (int**) que fue devuelta por readFile
-        for (int i = 0; i < size; i++) {
-            free(matrix[i]);
-        }
-        free(matrix);
-
-        // 2. Liberar los strings (char*) que están DENTRO de my_graph
-        // Estos fueron asignados con malloc en readFile.
-        free(my_graph.vertices);
-        free(my_graph.edges);
+int main(int argc, char *argv[]){  //int argc, char *argv[]
+    if (argc != 5){
+        printf("Error, la cantidad de parametros debe ser 5.");
+        return -1;
     }
-    
-    return 0;
+    if(strcmp(argv[1], "path") == 0){
+        const char *filename = argv[4];
+        
+        GraphData my_graph;
+        
+        int **matrix = readFile(filename, &my_graph); 
+
+        // Corregido: Accede al carácter en la posición [0] de la cadena
+        if (strlen(argv[2]) == 1 && strlen(argv[3]) == 1 && 
+            vertex_in_graph(argv[2][0], &my_graph) && vertex_in_graph(argv[3][0], &my_graph)) {
+        
+            if (matrix != NULL) {
+                int size = strlen(my_graph.vertices);
+                printf("\n--- Matriz de Adyacencia (Objeto Persistente) ---\n");
+                print_adyacent_matrix(matrix, size);
+                
+                // 1. Liberar la matriz (int**) que fue devuelta por readFile
+                for (int i = 0; i < size; i++) {
+                    free(matrix[i]);
+                }
+                free(matrix);
+
+                // 2. Liberar los strings (char*) que están DENTRO de my_graph
+                // Estos fueron asignados con malloc en readFile.
+                free(my_graph.vertices);
+                free(my_graph.edges);
+            }
+            find_path();
+            return 0;
+        }
+        printf("Error, vertices no validos.\n");
+        return -1;
+    }
+    return -1;
 }
