@@ -1,14 +1,3 @@
-ab
-ah
-bh
-bd
-bc
-cd
-di
-df
-de
-ef
-fi
-fh
-fg
-gh
+digraph
+abcdefghi
+abahbhbdbccddidfdeeffifhfggh
